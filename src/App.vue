@@ -1,17 +1,25 @@
 <template>
   <div id="App">
     <div class="container mx-auto">
-      <FilterBar
-        :parent-data="cityArr"
-        :parent-city="currentCity"
-        :parent-order-type="orderType"
-        @update:city="updateCity"
-        @update:order="updateOrder"
-      />
+      <section class="filterBar">
+        <FilterBar
+          parent-title="地區"
+          :parent-data="cityArr"
+          :parent-index="index.city"
+          @update="updateCity"
+        />
+        <FilterBar
+          parent-title="排序"
+          :parent-data="['倒數時間由近到遠', '倒數時間由遠到近']"
+          :parent-index="index.order"
+          @update="updateOrder"
+        />
+      </section>
+
       <Pic
         :data="selectData"
-        :parent-order="orderType"
-        :parent-title="currentCity"
+        :parent-order="index.order"
+        :parent-title="cityArr[index.city]"
       />
     </div>
   </div>
@@ -29,8 +37,11 @@ export default {
   },
   data() {
     return {
-      currentCity: '',
-      orderType: 0,
+      index: {
+        city: 0,
+        order: 0,
+      },
+      currentCity: '全部',
       activities: [],
     };
   },
@@ -50,10 +61,11 @@ export default {
       }
     },
     updateCity(val) {
-      this.currentCity = val;
+      this.index.city = val;
+      this.currentCity = this.cityArr[val];
     },
     updateOrder(val) {
-      this.orderType = val;
+      this.index.order = val;
     },
     setCountDown(e_date){
       const targetTime = Date.parse(e_date);
@@ -61,24 +73,33 @@ export default {
       return Math.ceil( (targetTime - now) / 86400000) ;
     },
     setPlace(){
-      return [...new Set(this.activities.map((item) => item.cityName.split('  ')))]
+      return [...new Set(this.activities.map((item) => item.cityName.split(/\s+/g)))]
     },
     defineNewData(){
       this.activities.forEach((item,index) => {
         item.countDown = this.setCountDown(item.endTime);
         item.place = this.setPlace()[index];
       });
+    },
+    sortData(arr){
+      if(this.index.order === 0) {
+        return arr.sort( (a,b) => a.countDown - b.countDown );
+      }
+      return arr.sort( (a,b) => b.countDown - a.countDown );
     }
   },
   computed: {
     cityArr() {
-      return [...new Set(this.activities.map((item) => item.place[0]))];
+      const arr = [...new Set(this.activities.map((item) => item.place[0]))];
+      arr.unshift('全部')
+      return arr;
     },
     selectData() {
-      if(this.currentCity) {
-        return this.activities.filter((item) => item.place[0] === this.currentCity);
-      }
-      return this.activities;
+      let arr = [];
+      this.currentCity === '全部'
+        ?arr = this.activities
+        :arr = this.activities.filter((item) => item.place[0] === this.currentCity);
+      return this.sortData(arr)
     },
   },
   
@@ -94,6 +115,12 @@ export default {
   body,
   button {
     font-size: 100%;
+  }
+
+  .filterBar {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #fff;
   }
 
   .row {

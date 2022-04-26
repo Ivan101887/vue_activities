@@ -1,65 +1,35 @@
 <template>
-  <section class="filterBar">
     <div class="filter">
-      <div class="filter__head">地區:</div>
+      <div class="filter__head">{{parentTitle}}:</div>
       <ul class="filter__body">
-        <li
-          :class="['filter__item', { 'filter__item--active': !parentCity }]"
-          @click="$emit('update:city', '')"
-        >
-          全部
-        </li>
         <li
           :class="[
             'filter__item',
-            { 'filter__item--active': parentCity === item }
+            { 'filter__item--active': parentIndex === index}
           ]"
-          @click="$emit('update:city', item)"
-          v-for="item in parentData"
+          v-for="(item,index) in parentData"
           :key="item"
+          @click="$emit('update', index)"
         >
           {{ item }}
         </li>
       </ul>
     </div>
-    <div class="filter">
-      <div class="filter__head">排序:</div>
-      <ul class="filter__body">
-        <li
-          :class="['filter__item', { 'filter__item--active': !parentOrderType }]"
-          @click="$emit('update:order', 0)"
-        >
-          倒數時間由近到遠
-        </li>
-        <li
-          :class="[
-            'filter__item',
-            { 'filter__item--active': parentOrderType === 1 }
-          ]"
-          @click="$emit('update:order', 1)"
-        >
-          倒數時間由遠到近
-        </li>
-      </ul>
-    </div>
-  </section>
 </template>
 <script>
 export default {
+  inheritAttrs: false,
   name: "filter-bar",
   props: {
+    parentTitle: String,
     parentData: Array,
-    parentCity: String,
+    parentIndex: Number,
     parentOrderType: Number,
   },
 }
 </script>
 <style scoped>
-  .filterBar {
-    margin-top: 10px;
-    padding: 15px;
-    background-color: #fff;
-  }
+  
   .filter {
     display: flex;
     align-items: center;
