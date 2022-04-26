@@ -1,20 +1,20 @@
 <template>
-    <div class="filter">
-      <div class="filter__head">{{parentTitle}}:</div>
-      <ul class="filter__body">
-        <li
-          :class="[
-            'filter__item',
-            { 'filter__item--active': parentIndex === index}
-          ]"
-          v-for="(item,index) in parentData"
-          :key="item"
-          @click="$emit('update', index)"
-        >
-          {{ item }}
-        </li>
-      </ul>
-    </div>
+  <div class="filter">
+    <div class="filter__head">{{ parentTitle }}:</div>
+    <ul class="filter__body">
+      <li
+        :class="[
+          'filter__item',
+          { 'filter__item--active': parentIndex === index }
+        ]"
+        v-for="(item, index) in parentData"
+        :key="item"
+        @click="$emit('update', index)"
+      >
+        {{ item }}
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
 export default {
@@ -29,7 +29,6 @@ export default {
 }
 </script>
 <style scoped>
-  
   .filter {
     display: flex;
     align-items: center;

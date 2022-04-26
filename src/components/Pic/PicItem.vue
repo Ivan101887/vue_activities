@@ -23,7 +23,7 @@ export default {
                   <img
                     loading="lazy"
                     class="img-resp"
-                    src="https://cloud.culture.tw${this.item.imageUrl}"
+                    src="${this.item.imageUrl ? `https://cloud.culture.tw${this.item.imageUrl}`:''}"
                     alt="${this.item.actName}"
                   />
                 </div>
