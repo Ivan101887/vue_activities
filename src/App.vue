@@ -4,9 +4,15 @@
       <FilterBar
         :parent-data="cityArr"
         :parent-city="currentCity"
-        @update="updateCity"
+        :parent-order-type="orderType"
+        @update:city="updateCity"
+        @update:order="updateOrder"
       />
-      <Pic :data="selectData" :parent-title="currentCity" />
+      <Pic
+        :data="activities"
+        :parent-order="orderType"
+        :parent-title="currentCity"
+      />
     </div>
   </div>
 </template>
@@ -24,8 +30,12 @@ export default {
   data() {
     return {
       currentCity: '',
+      orderType: 0,
       activities: [],
     };
+  },
+  async created() {
+    await this.getData();
   },
   methods: {
     async getData() {
@@ -34,6 +44,7 @@ export default {
         const res = await this.$http.get(api).catch(err => console.log(err));
         const data = await res.data;
         this.activities = data;
+        this.defineNewData();
       } catch (err) {
         console.log(err);
       }
@@ -41,21 +52,36 @@ export default {
     updateCity(val) {
       this.currentCity = val;
     },
+    updateOrder(val) {
+      this.orderType = val;
+    },
+    setCountDown(e_date){
+      const targetTime = Date.parse(e_date);
+      const now = Date.parse(new Date());
+      return Math.ceil( (targetTime - now) / 86400000) ;
+    },
+    setPlace(){
+      return [...new Set(this.activities.map((item) => item.cityName.split('  ')))]
+    },
+    defineNewData(){
+      this.activities.forEach((item,index) => {
+        item.countDown = this.setCountDown(item.endTime);
+        item.place = this.setPlace()[index];
+      });
+    }
   },
   computed: {
     cityArr() {
-      return [...new Set(this.activities.map((item) => item.cityName.substr(0,3)))];
+      return [...new Set(this.activities.map((item) => item.place[0]))];
     },
     selectData() {
       if(this.currentCity) {
-        return this.activities.filter((item) => item.cityName.substr(0,3) === this.currentCity);
+        return this.activities.filter((item) => item.place[0] === this.currentCity);
       }
       return this.activities;
     },
   },
-  created() {
-    this.getData();
-  },
+  
 };
 </script>
 

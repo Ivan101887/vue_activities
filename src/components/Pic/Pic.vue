@@ -4,7 +4,7 @@
       <h3>{{ parentTitle ? parentTitle : "全部" }}</h3>
     </div>
     <div class="pic__body">
-      <PicList :data="data" :parent-is-show="parentTitle===''"/>
+      <PicList :data="sortData" :parent-is-show="parentTitle === ''" />
     </div>
   </div>
 </template>
@@ -19,11 +19,20 @@ export default {
       type: Array,
       required: true,
     },
-    parentTitle: String
+    parentTitle: String,
+    parentOrder: Number
   },
   components: {
     PicList,
   },
+  computed: {
+    sortData(){
+      if(this.parentOrder === 0) {
+        return this.data.sort( (a,b) => a.countDown - b.countDown );
+      }
+      return this.data.sort( (a,b) => b.countDown - a.countDown );
+    }
+  }
 };
 </script>
 

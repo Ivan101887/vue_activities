@@ -15,7 +15,10 @@ export default {
         class: "gutter",
         domProps: {
           innerHTML:`
-            ${this.item.website ? `<a class="pic__link" href="${this.item.website}" target="_blank">` : ''}
+            ${this.item.website 
+              ? `<a class="pic__link" href="${this.item.website}" target="_blank">` 
+              : ''
+            }
                 <div class="imgContainer">
                   <img
                     loading="lazy"
@@ -26,30 +29,36 @@ export default {
                 </div>
                 <div class="pic__intro">
                   <div class="pic__tag">
-                    倒數<span>${ Math.ceil(this.countDays(this.item.endTime) / 86400000) }</span
+                    倒數<span>${ this.item.countDown }</span
                     >天
                   </div>
                   <h2 class="pic__tit">${ this.item.actName }</h2>
                   <div class="pic__dist">
-                    ${this.parentIsShow ? `<p class="pic__city">${ this.item.cityName.substr(0, 3) }</p>` : ''}
-                    <p class="pic__town">${ this.item.cityName.substring(5) }</p>
+                    ${this.parentIsShow 
+                      ? `<p class="pic__city">${ this.item.place[0] }</p>` 
+                      : ''
+                    }
+                    <p class="pic__town">
+                      ${ this.item.place[1] 
+                        ? this.item.place[1] 
+                        : '' 
+                      }
+                    </p>
                   </div>
                   <p class="pic__date">
                     ${ this.makeDateStr(this.item.startTime) } ~ ${ this.makeDateStr(this.item.endTime) }
                   </p>
                 </div>
-            ${this.item.website ? '</a>' : ''}
+            ${this.item.website 
+              ? '</a>' 
+              : ''
+            }
           `,
         }
       },
     )
   },
   methods: {
-    countDays(s_date) {
-      const targetTime = Date.parse(s_date)
-      const now = Date.parse(new Date())
-      return targetTime - now ;
-    },
     makeDateStr(date){
       return `${new Date(date).getFullYear()}/${new Date(date).getMonth() + 1}/${new Date(date).getDate()}`
     }
@@ -124,12 +133,15 @@ export default {
     margin-right: 5px;
     background-color: #aaa;
   }
+  .imgContainer {
+    position: relative;
+  }
   .imgContainer::after {
     content: "";
     position: absolute;
     top: 0;
     width: 100%;
-    height: 216px;
+    height: 100%;
     background-color: #cc0000;
     opacity: 0;
     display: block;
