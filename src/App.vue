@@ -9,7 +9,7 @@
         @update:order="updateOrder"
       />
       <Pic
-        :data="activities"
+        :data="selectData"
         :parent-order="orderType"
         :parent-title="currentCity"
       />
