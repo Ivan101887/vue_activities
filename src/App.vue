@@ -5,22 +5,18 @@
         <FilterBar
           parent-title="地區"
           :parent-data="cityArr"
-          :parent-index="index.city"
+          :parent-index="pageObj.index"
           @update="updateCity"
         />
         <FilterBar
           parent-title="排序"
           :parent-data="['倒數時間由近到遠', '倒數時間由遠到近']"
-          :parent-index="index.order"
+          :parent-index="Number(pageObj.isOrder)"
           @update="updateOrder"
         />
       </section>
 
-      <Pic
-        :data="selectData"
-        :parent-order="index.order"
-        :parent-title="cityArr[index.city]"
-      />
+      <Pic :data="selectData" :parent-title="cityArr[pageObj.index]" />
     </div>
   </div>
 </template>
@@ -37,9 +33,9 @@ export default {
   },
   data() {
     return {
-      index: {
-        city: 0,
-        order: 0,
+      pageObj: {
+        index: 0,
+        isOrder: false,
       },
       currentCity: '全部',
       activities: [],
@@ -61,11 +57,11 @@ export default {
       }
     },
     updateCity(val) {
-      this.index.city = val;
+      this.pageObj.index = val;
       this.currentCity = this.cityArr[val];
     },
-    updateOrder(val) {
-      this.index.order = val;
+    updateOrder() {
+      this.pageObj.isOrder = !this.pageObj.isOrder;
     },
     setCountDown(e_date){
       const targetTime = Date.parse(e_date);
@@ -82,7 +78,7 @@ export default {
       });
     },
     sortData(arr){
-      if(this.index.order === 0) {
+      if(!this.pageObj.isOrder) {
         return arr.sort( (a,b) => a.countDown - b.countDown );
       }
       return arr.sort( (a,b) => b.countDown - a.countDown );

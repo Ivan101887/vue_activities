@@ -20,7 +20,6 @@ export default {
       required: true,
     },
     parentTitle: String,
-    parentOrder: Number
   },
   components: {
     PicList,
